@@ -94,3 +94,58 @@ python3 manage.py createsuperuser
 python3 manage.py runserver
 ```
 and login using the details just created
+
+
+# Create Modules
+Navigate to the ```modules.py``` file in the app, in this case todo
+```py
+class Item(models.Model):
+    # name will be a text field that has a max length of 50 characters
+    # null prevents items being created without a name
+    # blank = false makes it a required field on forms
+    name = models.CharField(max_length=50, null=False, blank=False)
+     # done will be a boolean field with default set to not done (False)
+    done = models.BooleanField(null=False, blank=False, default=False)
+
+```
+
+Before creating the model, check to make sure it is creating the correct model in the terminal
+```
+python3 manage.py makemigrations --dry-run
+```
+If all is ok
+```
+python3 manage.py makemigrations
+```
+
+Check to see if there is an unapplied migration
+```
+python3 manage.py showmigrations
+```
+Check to make sure the migration will be correct
+```
+python3 manage.py migrate --plan
+```
+If all is ok
+```
+python3 manage.py migrate
+```
+
+Expose the table to the admin by registering the module. Go to the app's ```admin.py``` file and import the class from the models file and register it
+```py
+from .models import Item
+
+admin.site.register(Item)
+```
+
+Go back to ```models.py``` and change the way the item is displayed in the admin login
+```py
+class Item(models.Model):
+    name = models.CharField(max_length=50, null=False, blank=False)
+    done = models.BooleanField(null=False, blank=False, default=False)
+
+    # This sets the item to be it's name
+    def __str__(self):
+        return self.name
+```
+
