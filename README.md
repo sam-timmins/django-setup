@@ -360,6 +360,11 @@ pip3 freeze --local > requirements.txt
 heroku config
 ```
 Go to ```settings.py``` file and scroll down to the DATABASE section.
+
+Import the dj_database_url
+```py
+import dj_database_url
+```
 ```py
 # DATABASES = {
 #     'default': {
@@ -371,4 +376,9 @@ Go to ```settings.py``` file and scroll down to the DATABASE section.
 DATABASES = {
     'default': dj_database_url.parse('THE URL FROM THE HEROKU CONFIG STAGE')
 }
+```
+
+* Migrate the models to the new database
+```py
+python3 manage.py migrate
 ```
