@@ -487,3 +487,10 @@ SECRET_KEY = os.environ.get('SECRET_KEY', '')
     * Set Value to the generated key
     * Set Scope to sam-timmins/*
 * Restart the workspace
+
+* Create another secret_key for Heroku
+    * Add it to the config vars in heroku
+* Check the development server is still working in GitPod
+```
+python3 manage.py runserver
+``` 
