@@ -414,7 +414,10 @@ import os
 
 * Add host name of the heroku app in ```settings.py```
 ```py
-ALLOWED_HOSTS = [os.environ.get('HEROKU_HOSTNAME')]
+if development:
+    ALLOWED_HOSTS = ['localhost']
+else:
+    ALLOWED_HOSTS = [os.environ.get('HEROKU_HOSTNAME')]
 ```
 
 * Add SECRET KEY in ```settings.py```
