@@ -468,3 +468,22 @@ else:
     * Set name to DEVELOPMENT
     * Set Value to True
     * Set Scope to sam-timmins/*
+
+* Restart the workspace
+
+# Secret Key
+
+* Change the SECRET_KEY in the ```setting.py``` file to an empty string
+```py
+SECRET_KEY = os.environ.get('SECRET_KEY', '')
+```
+* Visit django secret key generator [here](https://miniwebtool.com/django-secret-key-generator/)
+* Add the generated key to the development variables
+    * Go to your GitHub workspaces page
+    * Click on the account in the upper right
+    * Click on settings
+    * Open the variables tab, and create new variable
+    * Set name to SECRET_KEY
+    * Set Value to the generated key
+    * Set Scope to sam-timmins/*
+* Restart the workspace
