@@ -149,3 +149,226 @@ class Item(models.Model):
         return self.name
 ```
 
+# Rendering Data
+
+Within the app, open the ```views.py``` file and import the models
+
+```py
+from django.shortcuts import render
+from .models import Item
+
+
+# Create your views here.
+def get_todo_list(request):
+    items = Item.objects.all()
+    context = {
+        'items' : items
+    }
+    return render(request, 'todo/todo_list.html', context)
+```
+
+This creates complete communication between users on the front and database on the backend, use {{ }} and {% %} in the templates html file to access the database.
+
+```html
+    <table>
+        {% for item in items %}
+            <tr>
+                {% if item.done %}
+                <!-- Create a strike through row if the item is done -->
+                    <td><strike>{{ item.name }}</strike></td>
+                {% else %}
+                <!-- Create a row if the item is not done -->
+                    <td>{{ item.name }}</td>
+                {% endif %}
+            </tr>
+            <!-- If the data base is empty create a row explaining -->
+            {% empty %}
+            <tr>
+                <td>You have nothing to do</td>
+            </tr>
+        {% endfor %}
+    </table>
+```
+
+# Forms
+```html
+<form action="add" method="POST">
+                # Always add this when posting data from Django
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Name: </label>
+                    <input type="text" class="form-control" id="id_name" name="item_name" placeholder="task name">
+                </div>
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" role="switch" id="id_done" name="id_done">
+                    <label class="form-check-label" for="id_done">Done: </label>
+                </div>
+                <button type="submit" class="btn btn-outline-danger">Add Item</button>
+            </form>
+```
+
+## Create form directly in the modal
+* Create a file in the app called ```forms.py```
+
+```py
+from django import forms
+from .models import Item
+
+
+class ItemForm(forms.ModelForm):
+    class Meta:
+        model = Item
+        fields = ['name', 'done']
+```
+
+* in ```views.py```
+```py
+def add_item(request):
+    if request.method == 'POST':
+        form = ItemForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('get_todo_list')
+    form = ItemForm()
+    context = {
+        'form' : form
+    }
+    
+    return render(request, 'todo/add_item.html', context)
+```
+
+
+# Testing
+
+Create a test file for each file needed to be tested.
+* ````forms.py````
+* ````test_forms.py````
+
+In the test file
+```py
+from django.test import TestCase
+
+# Create your tests here.
+class TestDjango(TestCase):
+
+    def test_it_works(self):
+        self.assertEqual(1,0)
+```
+
+Run only the test_forms file in the terminal 
+```
+python3 manage.py test todo.test_forms
+```
+
+Run only the TestItemFor class in the test_forms file in the terminal 
+```
+python3 manage.py test todo.test_forms.TestItemFor
+```
+
+Run only the test_item_name_is_required test in the TestItemFor class in the test_forms file in the terminal 
+```
+python3 manage.py test todo.test_forms.TestItemFor.test_item_name_is_required
+```
+
+* . = Test Passed
+* F = Test Failed
+* E = Error (terminal gives reason why)
+
+
+## Coverage of code that is tested
+* Install coverage in the terminal
+```
+pip3 install coverage
+```
+
+* Run coverage
+```
+coverage run --source=app_name manage.py test
+```
+
+* Create a report
+```
+coverage report
+```
+
+* Create an interactive html report, this create a htmlcov folder in the root directory
+```
+coverage html
+```
+* Within the folder there is an index.html, to view this
+```
+python3 -m http.server
+```
+
+### After changes
+* Run coverage
+```
+coverage html
+```
+```
+coverage run --source=app_name manage.py test
+```
+```
+python3 -m http.server
+```
+
+# Deployment
+* Install Postgres
+```
+pip3 install psycopg2
+```
+
+* Install gunicorn
+```
+pip3 install gunicorn
+```
+
+* Create a requirements file for Heroku to know what packages to install
+```
+pip3 freeze --local > requirements.txt
+```
+
+* Log into heroku in the terminal
+```
+heroku login -i
+```
+
+* Create an app name
+```
+ heroku apps:create application_name --region eu
+```
+
+* Check to make sure it is there
+```
+heroku apps
+```
+
+## Create a database in heroku
+* Navigate to the app from [heroku.com](www.heroku.com) and open the 'Resources' tab.
+* Search for 'Heroku Postgres', select it and click 'submit Order'
+* Check it is there by going to the 'Settings' tab and in the config vars, the  DATABASE_URL should be there.
+
+## Connect to the database in heroku
+* Install dj-database
+```
+pip3 install dj-database-url
+```
+```
+pip3 freeze --local > requirements.txt
+```
+```
+heroku config
+```
+Go to ```settings.py``` file and scroll down to the DATABASE section.
+```py
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+DATABASES = {
+    'default': dj_database_url.parse('THE URL FROM THE HEROKU CONFIG STAGE')
+}
+```
