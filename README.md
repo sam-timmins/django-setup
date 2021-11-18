@@ -401,5 +401,9 @@ heroku logs --tail
 * On initial setup we need to start gunicorn, create a Procfile in the root directory.
 * With in the Procfile add the following code to tell gunicorn to run using the wsgi module
 ```
-web: gunicorn django_todo.wsgi:application
+web: gunicorn django_todo.wsgi:applicati
+```
+* Commit and then push to heroku main
+```
+git push heroku main
 ```
