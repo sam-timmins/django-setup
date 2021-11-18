@@ -374,7 +374,7 @@ import dj_database_url
 # }
 
 DATABASES = {
-    'default': dj_database_url.parse('THE URL FROM THE HEROKU CONFIG STAGE')
+    'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
 }
 ```
 
@@ -414,5 +414,54 @@ import os
 
 * Add host name of the heroku app in ```settings.py```
 ```py
-ALLOWED_HOSTS = ['URL MINUS THE HTTPS GOES HERE']
+ALLOWED_HOSTS = [os.environ.get('HEROKU_HOSTNAME')]
 ```
+
+* Add SECRET KEY in ```settings.py```
+```py
+SECRET_KEY = os.environ.get('SECRET_KEY', 'GENERATED KEY GOES HERE')
+
+```
+
+# Automatic Deployment
+* Loging to heroku, open the app and on the dashboard select Deploy
+* Search for the correct repo and connect
+* Click enable automatic deploys
+
+# Set Config Vars
+
+```
+HEROKU_HOSTNAME set to the live url of the app 
+```
+
+# Create a development Environment
+* Open ```settings.py``` and add a variable 
+```py
+development = os.environ.get('DEVELOPMENT', False)
+```
+* Change the DEBUG to
+```py
+DEBUG = development
+```
+* Change the DATABASES section to 
+```py
+if development:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.parse(os.environ.get('DATABASE_URL'))
+    }
+```
+* Now set the development environment to True
+    * Go to your GitHub workspaces page
+    * Click on the account in the upper right
+    * Click on settings
+    * Open the variables tab, and create new variable
+    * Set name to DEVELOPMENT
+    * Set Value to True
+    * Set Scope to sam-timmins/*
