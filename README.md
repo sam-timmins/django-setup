@@ -382,3 +382,24 @@ DATABASES = {
 ```py
 python3 manage.py migrate
 ```
+
+* Push to GihHub
+* Enter below
+```
+ heroku config:set DISABLE_COLLECTSTATIC=1
+```
+* Push to heroku master
+```
+git push heroku main
+```
+* The url will be shown followed by 'deployed to Heroku'
+
+If it shows an application error, enter below to see the errr codes.
+```
+heroku logs --tail
+```
+* On initial setup we need to start gunicorn, create a Procfile in the root directory.
+* With in the Procfile add the following code to tell gunicorn to run using the wsgi module
+```
+web: gunicorn django_todo.wsgi:application
+```
