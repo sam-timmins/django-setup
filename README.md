@@ -407,3 +407,8 @@ web: gunicorn django_todo.wsgi:applicati
 ```
 git push heroku main
 ```
+
+* Add host name of the heroku app in ```settings.py```
+```py
+ALLOWED_HOSTS = ['URL MINUS THE HTTPS GOES HERE']
+```
